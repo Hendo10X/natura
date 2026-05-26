@@ -1,0 +1,154 @@
+@import "tailwindcss";
+
+@theme inline {
+    --font-heading: var(--font-serif);
+    --font-serif: var(--font-serif);
+    --font-sans: var(--font-sans);
+
+    --color-background: var(--background);
+    --color-foreground: var(--foreground);
+    --color-card: var(--card);
+    --color-card-foreground: var(--card-foreground);
+    --color-muted: var(--muted);
+    --color-muted-foreground: var(--muted-foreground);
+    --color-primary: var(--primary);
+    --color-primary-foreground: var(--primary-foreground);
+    --color-secondary: var(--secondary);
+    --color-secondary-foreground: var(--secondary-foreground);
+    --color-accent: var(--accent);
+    --color-accent-foreground: var(--accent-foreground);
+    --color-border: var(--border);
+    --color-input: var(--input);
+    --color-ring: var(--ring);
+
+    --radius-sm: calc(var(--radius) * 0.5);
+    --radius-md: calc(var(--radius) * 0.75);
+    --radius-lg: var(--radius);
+    --radius-xl: calc(var(--radius) * 1.5);
+    --radius-2xl: calc(var(--radius) * 2);
+}
+
+:root {
+    /* Warm cream paper */
+    --background: oklch(0.962 0.018 85);
+    /* Deep warm ink */
+    --foreground: oklch(0.245 0.018 70);
+
+    --card: oklch(0.985 0.010 85);
+    --card-foreground: oklch(0.245 0.018 70);
+
+    --muted: oklch(0.925 0.022 85);
+    --muted-foreground: oklch(0.485 0.020 80);
+
+    /* Deep forest sage */
+    --primary: oklch(0.355 0.052 145);
+    --primary-foreground: oklch(0.975 0.018 85);
+
+    /* Warm clay / sand */
+    --secondary: oklch(0.885 0.030 75);
+    --secondary-foreground: oklch(0.295 0.030 70);
+
+    /* Muted terracotta accent */
+    --accent: oklch(0.625 0.110 45);
+    --accent-foreground: oklch(0.985 0.010 85);
+
+    --border: oklch(0.875 0.022 80);
+    --input: oklch(0.875 0.022 80);
+    --ring: oklch(0.355 0.052 145);
+
+    --radius: 0.5rem;
+
+    /* Smooth easing tokens (per userinterface-wiki) */
+    --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+    --ease-in: cubic-bezier(0.64, 0, 0.78, 0);
+    --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+    --duration-hover: 160ms;
+    --duration-state: 220ms;
+    --duration-page: 280ms;
+}
+
+@theme inline {
+    --ease-out: var(--ease-out);
+    --ease-in: var(--ease-in);
+    --ease-in-out: var(--ease-in-out);
+}
+
+@layer base {
+    * {
+        border-color: var(--border);
+        -webkit-font-smoothing: antialiased;
+    }
+    /* Smooth, ease-out defaults for any transitioned property — never linear */
+    a,
+    button,
+    input,
+    select,
+    textarea,
+    [data-transition] {
+        transition-timing-function: var(--ease-out);
+        transition-duration: var(--duration-hover);
+    }
+    html {
+        scroll-behavior: smooth;
+    }
+    @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+            scroll-behavior: auto !important;
+        }
+    }
+    html,
+    body {
+        background-color: var(--background);
+        color: var(--foreground);
+        font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+    }
+    h1,
+    h2,
+    h3,
+    h4 {
+        font-family: var(--font-serif), ui-serif, Georgia, serif;
+        font-weight: 400;
+        letter-spacing: -0.01em;
+    }
+    /* Strip box shadows project-wide */
+    * {
+        box-shadow: none !important;
+    }
+    ::selection {
+        background-color: oklch(0.355 0.052 145 / 0.18);
+        color: var(--foreground);
+    }
+}
+
+@layer utilities {
+    .font-serif {
+        font-family: var(--font-serif), ui-serif, Georgia, serif;
+    }
+    /* Marquee is a progress-style animation — linear is correct here */
+    .marquee-track {
+        animation: marquee 38s linear infinite;
+    }
+    @keyframes marquee {
+        from {
+            transform: translateX(0);
+        }
+        to {
+            transform: translateX(-50%);
+        }
+    }
+    .navbar-blur {
+        backdrop-filter: saturate(140%) blur(14px);
+        -webkit-backdrop-filter: saturate(140%) blur(14px);
+    }
+    .ease-out-smooth {
+        transition-timing-function: var(--ease-out);
+    }
+    .ease-in-out-smooth {
+        transition-timing-function: var(--ease-in-out);
+    }
+}
