@@ -32,13 +32,6 @@ pnpm-debug.log*
 .env*.local
 .env
 
-# payload
-/natura.db
-/natura.db-journal
-/payload-types.ts
-/media
-/public/uploads
-
 # typescript
 *.tsbuildinfo
 next-env.d.ts
