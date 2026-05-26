@@ -5,15 +5,30 @@ import type { Payload } from "payload"
 /**
  * Seeds default content on first run so the site has something to show
  * before an admin logs in. Skips anything that already exists.
+ *
+ * Wrapped in try/catch per step so a transient "relation does not exist"
+ * during a cold start (push migration still in flight) never takes the
+ * whole site down — the next request will retry naturally.
  */
 export async function seedDefaults(payload: Payload) {
-  await seedMedia(payload)
-  await seedEbooks(payload)
-  await seedTestimonials(payload)
-  await seedPosts(payload)
-  await seedPages(payload)
-  await seedLanding(payload)
-  await seedNavigation(payload)
+  const steps: Array<[string, () => Promise<void>]> = [
+    ["media", () => seedMedia(payload)],
+    ["ebooks", () => seedEbooks(payload)],
+    ["testimonials", () => seedTestimonials(payload)],
+    ["posts", () => seedPosts(payload)],
+    ["pages", () => seedPages(payload)],
+    ["landing", () => seedLanding(payload)],
+    ["navigation", () => seedNavigation(payload)],
+  ]
+  for (const [label, fn] of steps) {
+    try {
+      await fn()
+    } catch (err) {
+      payload.logger.warn(
+        `[seed] step "${label}" skipped: ${(err as Error).message}`
+      )
+    }
+  }
 }
 
 const PUBLIC_ROOT = path.resolve(process.cwd(), "public")

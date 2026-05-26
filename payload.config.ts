@@ -3,6 +3,7 @@ import { fileURLToPath } from "url"
 import { buildConfig } from "payload"
 import { postgresAdapter } from "@payloadcms/db-postgres"
 import { lexicalEditor } from "@payloadcms/richtext-lexical"
+import { vercelBlobStorage } from "@payloadcms/storage-vercel-blob"
 import sharp from "sharp"
 import { seedDefaults } from "./payload/seed"
 
@@ -44,11 +45,15 @@ export default buildConfig({
       hooks: {
         afterRead: [
           ({ doc }) => {
-            // Override Payload's default /api/media/file/* URL so the frontend
-            // gets a static path Next serves directly from public/.
-            if (doc?.filename) {
-              doc.url = `/uploads/media/${doc.filename}`
-            }
+            // Only rewrite the URL when it's still pointing at Payload's
+            // default /api/media/file/* endpoint. If a storage plugin
+            // (e.g. Vercel Blob in production) has set an absolute URL,
+            // leave it alone.
+            if (!doc?.filename) return doc
+            const current = typeof doc.url === "string" ? doc.url : ""
+            const isRemote = /^https?:\/\//.test(current)
+            if (isRemote) return doc
+            doc.url = `/uploads/media/${doc.filename}`
             return doc
           },
         ],
@@ -338,8 +343,25 @@ export default buildConfig({
     pool: {
       connectionString: process.env.DATABASE_URI,
     },
+    // Auto-sync the schema on every boot, in dev AND prod. For this app the
+    // schema is fully owned by payload.config.ts and we don't need formal
+    // migration files. Without this, Vercel boots against an empty DB and
+    // every query fails with "relation does not exist".
+    push: true,
   }),
   sharp,
+  plugins: [
+    vercelBlobStorage({
+      // Only enable when running on Vercel (or anywhere a token is set).
+      // Locally with no token, files keep going to public/uploads/media.
+      enabled: !!process.env.BLOB_READ_WRITE_TOKEN,
+      collections: { media: true },
+      token: process.env.BLOB_READ_WRITE_TOKEN,
+      // Browser uploads files directly to Vercel Blob using a signed URL,
+      // skipping the serverless function entirely — no 4.5MB body limit.
+      clientUploads: true,
+    }),
+  ],
   onInit: async (payload) => {
     await seedDefaults(payload)
   },

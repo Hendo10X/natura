@@ -49,12 +49,11 @@ function getId(value: unknown): number | string | null {
 export function mediaUrl(media: unknown): string | null {
   if (!media || typeof media !== "object") return null
   const m = media as { url?: string; filename?: string }
-  // Static URL set by the media collection's afterRead hook.
-  if (m.url && m.url.startsWith("/uploads/")) return m.url
-  // Fall back to a static path computed from filename.
-  if (m.filename) return `/uploads/media/${encodeURIComponent(m.filename)}`
-  // Last resort — whatever Payload gave us.
+  // Trust whatever the media collection's afterRead hook + storage plugin
+  // produced — either an absolute blob URL (Vercel Blob in prod) or a
+  // local /uploads/media/* path (dev).
   if (m.url) return m.url
+  if (m.filename) return `/uploads/media/${encodeURIComponent(m.filename)}`
   return null
 }
 
