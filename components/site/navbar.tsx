@@ -12,6 +12,8 @@ import {
   SheetDescription,
 } from "@/components/ui/sheet"
 import { cn } from "@/lib/utils"
+import { CartTrigger } from "@/components/site/cart-trigger"
+import { useCart } from "@/lib/cart"
 
 export type NavLink = { label: string; href: string }
 
@@ -78,25 +80,7 @@ export function Navbar({ links, variant = "over-hero" }: NavbarProps) {
               <path d="m20 20-3.5-3.5" strokeLinecap="round" />
             </svg>
           </button>
-          <Link
-            href="/shop"
-            className={cn(
-              "hidden items-center gap-2 rounded-full px-4 py-2 text-[12px] font-medium tracking-wide md:inline-flex",
-              overHero
-                ? "bg-white text-foreground hover:bg-[color:var(--accent)] hover:text-white"
-                : "bg-foreground text-background hover:bg-[color:var(--primary)]"
-            )}
-          >
-            <span>Cart</span>
-            <span
-              className={cn(
-                "inline-flex h-5 min-w-5 items-center justify-center rounded-full px-1.5 text-[10px]",
-                overHero ? "bg-foreground/10" : "bg-background/15"
-              )}
-            >
-              0
-            </span>
-          </Link>
+          <CartTrigger variant={variant} className="hidden md:inline-flex" />
 
           <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger
@@ -213,33 +197,7 @@ export function Navbar({ links, variant = "over-hero" }: NavbarProps) {
                   >
                     Browse the library
                   </SheetClose>
-                  <SheetClose
-                    nativeButton={false}
-                    render={
-                      <Link
-                        href="/shop"
-                        className="inline-flex h-12 w-12 items-center justify-center rounded-full border border-border text-foreground transition-colors duration-200 [transition-timing-function:var(--ease-out)] hover:bg-foreground/5"
-                      />
-                    }
-                  >
-                    <svg
-                      width="18"
-                      height="18"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="1.6"
-                      aria-hidden="true"
-                    >
-                      <path
-                        d="M3 3h2l2.4 12.4a2 2 0 0 0 2 1.6h8.2a2 2 0 0 0 2-1.6L21 7H6"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                      <circle cx="9" cy="21" r="1.4" />
-                      <circle cx="18" cy="21" r="1.4" />
-                    </svg>
-                  </SheetClose>
+                  <MobileCartButton onAfterClick={() => setOpen(false)} />
                 </motion.div>
               </motion.nav>
             </SheetContent>
@@ -278,6 +236,46 @@ function DesktopLink({
         )}
       />
     </Link>
+  )
+}
+
+function MobileCartButton({ onAfterClick }: { onAfterClick: () => void }) {
+  const { openDrawer, count, hydrated } = useCart()
+  return (
+    <button
+      type="button"
+      aria-label="Open cart"
+      onClick={() => {
+        onAfterClick()
+        // Wait for the menu sheet to start exiting before opening the cart
+        // sheet so the two transitions don't fight each other.
+        setTimeout(() => openDrawer(), 220)
+      }}
+      className="relative inline-flex h-12 w-12 items-center justify-center rounded-full border border-border text-foreground transition-colors duration-200 [transition-timing-function:var(--ease-out)] hover:bg-foreground/5"
+    >
+      <svg
+        width="18"
+        height="18"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        aria-hidden="true"
+      >
+        <path
+          d="M3 3h2l2.4 12.4a2 2 0 0 0 2 1.6h8.2a2 2 0 0 0 2-1.6L21 7H6"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <circle cx="9" cy="21" r="1.4" />
+        <circle cx="18" cy="21" r="1.4" />
+      </svg>
+      {hydrated && count > 0 ? (
+        <span className="absolute -top-1 -right-1 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-foreground px-1.5 text-[10px] tabular-nums text-background">
+          {count}
+        </span>
+      ) : null}
+    </button>
   )
 }
 

@@ -91,6 +91,8 @@ export type Ebook = {
   coverAlt: string
   shortDescription: string
   longDescription: string[]
+  /** Polar product ID. When absent, the Buy button is disabled. */
+  polarProductId?: string
 }
 
 export const EBOOKS: Ebook[] = [

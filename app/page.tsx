@@ -7,33 +7,36 @@ import { Rituals } from "@/components/site/rituals"
 import { Testimonials } from "@/components/site/testimonials"
 import { Footer } from "@/components/site/footer"
 import {
-  EBOOKS,
   FEATURED,
   FOOTER,
-  HERO,
   MARQUEE_PHRASES,
   NAV_LINKS,
   RITUALS,
-  SLEEP_SECTION,
   TESTIMONIALS,
   TESTIMONIALS_SECTION,
 } from "@/lib/content"
+import { getEbooks, getLanding } from "@/lib/sanity"
 
-export default function Page() {
+export const revalidate = 60
+
+export default async function Page() {
+  const [ebooks, landing] = await Promise.all([getEbooks(), getLanding()])
+  const featuredBooks = ebooks.slice(0, 4)
+
   return (
     <main className="relative w-full bg-background text-foreground">
       <Navbar links={NAV_LINKS} variant="over-hero" />
-      <Hero {...HERO} />
+      <Hero {...landing.hero} />
       <FeaturedEbooks
         eyebrow={FEATURED.eyebrow}
         headlineTop={FEATURED.headlineTop}
         headlineBottom={FEATURED.headlineBottom}
-        viewAllLabel={`View all ${EBOOKS.length} ebooks`}
-        totalLabel={`View all ${EBOOKS.length} ebooks`}
-        books={EBOOKS.slice(0, 4)}
+        viewAllLabel={`View all ${ebooks.length} ebooks`}
+        totalLabel={`View all ${ebooks.length} ebooks`}
+        books={featuredBooks}
       />
       <Marquee phrases={MARQUEE_PHRASES} />
-      <SleepCollection {...SLEEP_SECTION} />
+      <SleepCollection {...landing.sleep} />
       <Rituals {...RITUALS} />
       <Testimonials {...TESTIMONIALS_SECTION} entries={TESTIMONIALS} />
       <Footer {...FOOTER} />
