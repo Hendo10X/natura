@@ -42,7 +42,7 @@ export function Navbar({ links, variant = "over-hero" }: NavbarProps) {
           className="font-serif text-lg tracking-tight sm:text-xl"
         >
           <span className="font-medium">Blue Hibiscus</span>
-          <span className="ml-[1px] text-[color:var(--accent)]">.</span>
+          <span className="ml-px text-accent">.</span>
         </Link>
 
         <nav className="hidden items-center gap-8 md:flex">
@@ -113,7 +113,7 @@ export function Navbar({ links, variant = "over-hero" }: NavbarProps) {
               <div className="flex items-center justify-between px-6 pt-5 pb-2">
                 <span className="font-serif text-lg tracking-tight">
                   <span className="font-medium">Blue Hibiscus</span>
-                  <span className="ml-[1px] text-[color:var(--accent)]">.</span>
+                  <span className="ml-px text-accent">.</span>
                 </span>
                 <SheetClose
                   render={
@@ -191,7 +191,7 @@ export function Navbar({ links, variant = "over-hero" }: NavbarProps) {
                     render={
                       <Link
                         href="/shop"
-                        className="inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-foreground px-5 py-3 text-sm font-medium text-background transition-colors duration-200 [transition-timing-function:var(--ease-out)] hover:bg-[color:var(--primary)]"
+                        className="inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-foreground px-5 py-3 text-sm font-medium text-background transition-colors duration-200 ease-out hover:bg-primary"
                       />
                     }
                   >
@@ -231,7 +231,7 @@ function DesktopLink({
       <span
         aria-hidden="true"
         className={cn(
-          "pointer-events-none absolute -bottom-1 left-0 h-px w-full origin-left scale-x-0 transition-transform duration-300 [transition-timing-function:var(--ease-out)] group-hover:scale-x-100",
+          "pointer-events-none absolute -bottom-1 left-0 h-px w-full origin-left scale-x-0 transition-transform duration-300 ease-out group-hover:scale-x-100",
           overHero ? "bg-white" : "bg-foreground"
         )}
       />
@@ -251,7 +251,7 @@ function MobileCartButton({ onAfterClick }: { onAfterClick: () => void }) {
         // sheet so the two transitions don't fight each other.
         setTimeout(() => openDrawer(), 220)
       }}
-      className="relative inline-flex h-12 w-12 items-center justify-center rounded-full border border-border text-foreground transition-colors duration-200 [transition-timing-function:var(--ease-out)] hover:bg-foreground/5"
+      className="relative inline-flex h-12 w-12 items-center justify-center rounded-full border border-border text-foreground transition-colors duration-200 ease-out hover:bg-foreground/5"
     >
       <svg
         width="18"
@@ -283,19 +283,19 @@ function MobileLinkLabel({ label }: { label: string }) {
   return (
     <span className="flex w-full items-center justify-between">
       <span className="relative inline-block overflow-hidden font-serif text-3xl leading-none tracking-tight text-foreground">
-        <span className="block transition-transform duration-[420ms] [transition-timing-function:var(--ease-out)] group-hover:-translate-y-full">
+        <span className="block transition-transform duration-420 ease-out group-hover:-translate-y-full">
           {label}
         </span>
         <span
           aria-hidden="true"
-          className="absolute inset-0 block translate-y-full text-[color:var(--primary)] transition-transform duration-[420ms] [transition-timing-function:var(--ease-out)] group-hover:translate-y-0"
+          className="absolute inset-0 block translate-y-full text-primary transition-transform duration-420 ease-out group-hover:translate-y-0"
         >
           {label}
         </span>
       </span>
       <span
         aria-hidden="true"
-        className="inline-flex h-9 w-9 items-center justify-center rounded-full text-foreground/60 transition-transform duration-300 [transition-timing-function:var(--ease-out)] group-hover:translate-x-1 group-hover:text-foreground"
+        className="inline-flex h-9 w-9 items-center justify-center rounded-full text-foreground/60 transition-transform duration-300 ease-out group-hover:translate-x-1 group-hover:text-foreground"
       >
         <svg
           width="14"
@@ -317,13 +317,13 @@ function Hamburger({ open }: { open: boolean }) {
     <span aria-hidden="true" className="relative block h-3 w-5">
       <span
         className={cn(
-          "absolute left-0 right-0 h-px bg-current transition-transform duration-[280ms] [transition-timing-function:var(--ease-out)]",
+          "absolute left-0 right-0 h-px bg-current transition-transform duration-280 ease-out",
           open ? "top-1/2 -translate-y-1/2 rotate-45" : "top-0"
         )}
       />
       <span
         className={cn(
-          "absolute left-0 right-0 h-px bg-current transition-transform duration-[280ms] [transition-timing-function:var(--ease-out)]",
+          "absolute left-0 right-0 h-px bg-current transition-transform duration-280 ease-out",
           open ? "bottom-1/2 translate-y-1/2 -rotate-45" : "bottom-0"
         )}
       />
